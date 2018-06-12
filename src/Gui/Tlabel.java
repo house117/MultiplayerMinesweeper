@@ -29,16 +29,7 @@ public class Tlabel extends JLabel{
         this.xx = xx;
         this.yy = yy;
         switch(celda.getEstado()){
-            /*
-                CERRADO,
-    ABIERTO,
-    INTERROGACION,
-    MINA,
-    BOOM,
-    BANDERA,
-    BANDERAMALA;
-            */
-           
+            
             case REDFLAG:
                 this.cargarIcono("/images/interrogacion.png");
                 break;

@@ -8,6 +8,7 @@ package Gui;
 import buscaminasobjects.BuscaminasMp;
 import Gui.listener.TableroListener;
 import Threads.Receptor;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.io.DataOutputStream;
@@ -33,6 +34,7 @@ public class PrincipalFrame extends JFrame{
     private PlayersPanel pnlJugadores;
     private Socket socket;
     private Jugador jugador;
+    private Jugador jugadorEnemigo;
     private Boolean isMyTurn;
     ObjectOutputStream writer;
     ObjectInputStream reader;
@@ -41,10 +43,10 @@ public class PrincipalFrame extends JFrame{
         super(nombre);
         super.setLayout(new FlowLayout(FlowLayout.LEFT));
         super.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        super.setSize(new Dimension(750, 520));
+        super.setSize(new Dimension(700, 520));
         super.setResizable(false);
         super.setLocationRelativeTo(null);
-        
+        super.setBackground(Color.black);
         socket = new Socket("localhost", 1235);
         
         writer = new ObjectOutputStream(socket.getOutputStream());
@@ -57,6 +59,9 @@ public class PrincipalFrame extends JFrame{
         isMyTurn = (Boolean)reader.readObject();
         System.out.println("BOOLEANO ES:"+isMyTurn.toString());
         
+        
+        
+        
         //juego
         this.buscaminas = (BuscaminasMp)reader.readObject();
         
@@ -65,8 +70,8 @@ public class PrincipalFrame extends JFrame{
         
         
         //PANEL JUGADORES
-        pnlJugadores = new PlayersPanel(jugador, jugador);
-        pnlJugadores.setPreferredSize(new Dimension(250,480));
+        pnlJugadores = new PlayersPanel(this.jugador, this.jugador);
+        pnlJugadores.setPreferredSize(new Dimension(200,480));
         //PANEL TABLERO
         pnlTablero = new TableroPanel(new ImageIcon("fondo.png"));
         pnlTablero.setPreferredSize(new Dimension(480, 480));
@@ -77,7 +82,7 @@ public class PrincipalFrame extends JFrame{
                 if (getIsMyTurn()) {
                     System.out.printf("hicieron click en [%d][%d]", x, y);
                     try {
-                        setIsMyTurn(buscaminas.abrirCelda(x, y, jugador, writer));
+                        setIsMyTurn(buscaminas.abrirCelda(x, y, getJugador(), writer));
                         if (buscaminas.getEstado() == GameEst.JUGANDO) {
                             getPnlTablero().removeAll();
                             getPnlTablero().drawTablero(buscaminas);
@@ -117,7 +122,7 @@ public class PrincipalFrame extends JFrame{
         });
         super.add(pnlJugadores);
         super.add(pnlTablero);
-        receptor = new Receptor(jugador, this.buscaminas, reader, this);
+        receptor = new Receptor(getJugador(), this.buscaminas, reader, this);
         System.out.println("Creo el receptor");
         receptor.start();
         System.out.println("Ya esta todo el pedo para "+jugador.getEquipo());
@@ -144,5 +149,33 @@ public class PrincipalFrame extends JFrame{
      */
     public void setIsMyTurn(Boolean isMyTurn) {
         this.isMyTurn = isMyTurn;
+    }
+
+    /**
+     * @return the jugadorEnemigo
+     */
+    public Jugador getJugadorEnemigo() {
+        return jugadorEnemigo;
+    }
+
+    /**
+     * @param jugadorEnemigo the jugadorEnemigo to set
+     */
+    public void setJugadorEnemigo(Jugador jugadorEnemigo) {
+        this.jugadorEnemigo = jugadorEnemigo;
+    }
+
+    /**
+     * @return the jugador
+     */
+    public Jugador getJugador() {
+        return jugador;
+    }
+
+    /**
+     * @param jugador the jugador to set
+     */
+    public void setJugador(Jugador jugador) {
+        this.jugador = jugador;
     }
 }

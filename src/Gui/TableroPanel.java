@@ -48,7 +48,7 @@ public class TableroPanel extends JPanel{
         fondo = new JLabel();
         fondo.setLayout(new BorderLayout());
         fondo.setIcon(imagenFondo);
-        super.setBackground(Color.LIGHT_GRAY);
+        super.setBackground(Color.BLACK);
         super.setLayout(null);
         super.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
     }
@@ -57,43 +57,54 @@ public class TableroPanel extends JPanel{
             for(int j=0; j<buscaminas.getDimy(); j++){
                 Celda celda = buscaminas.getTablero()[j][i];
                 if(celda.getEstado() == CeldaEstado.ABIERTO){
-                    JLabel abierto = new JLabel("", SwingConstants.CENTER);
-                    if(celda.getNumero() != 0){
-                        abierto.setText(celda.getNumero().toString());
-                        abierto.setFont(new Font("Arial", Font.BOLD, 14));
-                        switch(celda.getNumero()){
-                            case 1:
-                                abierto.setForeground(new Color(32, 35, 137));
-                                break;
-                            case 2:
-                                abierto.setForeground(new Color(10, 102, 10));
-                                break;
-                            case 3:
-                                abierto.setForeground(Color.RED);
-                                break;
-                            case 4:
-                                abierto.setForeground(Color.BLUE);
-                                break;
-                            case 5:
-                                abierto.setForeground(new Color(102, 44, 11));
-                                break;
-                            case 6:
-                                abierto.setForeground(new Color(104, 57, 22));
-                                break;
-                            case 7:
-                                abierto.setForeground(new Color(91, 15, 15));
-                                break;
-                            case 8:
-                                abierto.setForeground(Color.BLACK);
-                                break;
-                            default:
-                                throw new AssertionError();
-                                
-                                
-                        }
-                        
-                        
+                    Tlabel abierto = null;
+                    //JLabel abierto = new JLabel(); //= new JLabel("", SwingConstants.CENTER);
+
+                    //abierto.setText(celda.getNumero().toString());
+                    //abierto.setFont(new Font("Arial", Font.BOLD, 14));
+                    switch (celda.getNumero()) {
+                        case 0:
+                            abierto = new Tlabel("/images/zeroCell.png");
+                            break;
+                        case 1:
+                            //abierto.setForeground(new Color(32, 35, 137));
+                            abierto = new Tlabel("/images/oneCell.png");
+                            break;
+                        case 2:
+                            abierto = new Tlabel("/images/twoCell.png");
+                            //abierto.setForeground(new Color(10, 102, 10));
+                            break;
+                        case 3:
+                            abierto = new Tlabel("/images/threeCell.png");
+                            //abierto.setForeground(Color.RED);
+                            break;
+                        case 4:
+                            abierto = new Tlabel("/images/fourCell.png");
+                            //abierto.setForeground(Color.BLUE);
+                            break;
+                        case 5:
+                            abierto = new Tlabel("/images/fiveCell.png");
+                            //abierto.setForeground(new Color(102, 44, 11));
+                            break;
+                        case 6:
+                            abierto = new Tlabel("/images/sixCell.png");
+                            //abierto.setForeground(new Color(104, 57, 22));
+                            break;
+                        case 7:
+                            abierto = new Tlabel("/images/sevenCell.png");
+                            //abierto.setForeground(new Color(91, 15, 15));
+                            break;
+                        case 8:
+                            abierto = new Tlabel("/images/eightCell.png");
+                            //abierto.setForeground(Color.BLACK);
+                            break;
+                        default:
+                            throw new AssertionError();
+
                     }
+
+
+                    
                 abierto.setBounds(j*DISTANCIA+BORDE, i*DISTANCIA+BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
                 abierto.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
                 
@@ -119,9 +130,10 @@ public class TableroPanel extends JPanel{
 
 
                 } else {
-                   TButton cerrado = new TButton(celda, j, i);
+                   TButton cerrado = new TButton(celda, j, i, "/images/closedCell.png");
                    cerrado.setBounds(j*DISTANCIA+BORDE, i*DISTANCIA+BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
                    cerrado.setBackground(new Color(29, 178, 215));
+                   //cerrado.setIcon(new ImageIcon("/images/closedCell.png"));
                    cerrado.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
                     cerrado.addActionListener(new ActionListener() {
                        @Override

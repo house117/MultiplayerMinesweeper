@@ -24,27 +24,11 @@ public class TButton extends JButton{
         super();
         cargarIcono(path);
 }
-    public TButton(Celda celda, Integer xx, Integer yy){
+    public TButton(Celda celda, Integer xx, Integer yy, String path){
         this.celda = celda;
         this.xx = xx;
         this.yy = yy;
-        switch(celda.getEstado()){
-            /*
-                CERRADO,
-    ABIERTO,
-    INTERROGACION,
-    MINA,
-    BOOM,
-    BANDERA,
-    BANDERAMALA;
-            */
-           
-            case INTERROGACION:
-                this.cargarIcono("/images/interrogacion.png");
-                break;
-            case BANDERA:
-                this.cargarIcono("/images/bandera.png");
-        }
+        this.cargarIcono(path);
     }
     private void cargarIcono(String path){
                 URL url = System.class.getResource(path);

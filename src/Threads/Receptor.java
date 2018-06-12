@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import objects.Coordenada;
+import objects.Equipo;
 import objects.GameEst;
 import objects.Jugador;
 
@@ -35,7 +36,21 @@ public class Receptor extends Thread{
 
     @Override
     public void run() {
-        
+        /*try {
+            String nombre = (String) reader.readObject();
+            parent.getJugadorEnemigo().setNombre(nombre);
+            switch(parent.getJugador().getEquipo()){
+                case EquipoAzul:
+                    parent.getJugadorEnemigo().setEquipo(Equipo.EquipoRojo);
+                    break;
+                case EquipoRojo:
+                    parent.getJugadorEnemigo().setEquipo(Equipo.EquipoAzul);
+                    break;
+                        
+            }
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(Receptor.class.getName()).log(Level.SEVERE, null, ex);
+        }*/
         while(true){
             try {
                 System.out.println("ME ESTOY EJECUTANDO, esperando a leer!!!");
