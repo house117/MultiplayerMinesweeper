@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
+import objects.GameEst;
 /**
  *
  * @author House
@@ -52,6 +53,7 @@ public class TableroPanel extends JPanel{
         super.setLayout(null);
         super.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
     }
+    
     public void drawTablero(BuscaminasMp buscaminas){
         for(int i=0; i<buscaminas.getDimx(); i++){
             for(int j=0; j<buscaminas.getDimy(); j++){
@@ -112,7 +114,7 @@ public class TableroPanel extends JPanel{
                 super.add(abierto);      
                 }else if (celda.getEstado() == CeldaEstado.BLUEFLAG || celda.getEstado() == CeldaEstado.REDFLAG) {
                     if (celda.getEstado() == CeldaEstado.REDFLAG) {
-                        System.out.println("ENTRO IF DE REDFLAG");
+                        //System.out.println("ENTRO IF DE REDFLAG");
                         Tlabel flag = new Tlabel("/images/banderaRoja.png");
 
                         flag.setBounds(j * DISTANCIA + BORDE, i * DISTANCIA + BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
@@ -120,7 +122,7 @@ public class TableroPanel extends JPanel{
                         super.add(flag);
                     }
                     if (celda.getEstado() == CeldaEstado.BLUEFLAG) {
-                        System.out.println("ENTRO IF DE REDFLAG");
+                        //System.out.println("ENTRO IF DE REDFLAG");
                         Tlabel flag = new Tlabel("/images/banderaAzul.png");
 
                         flag.setBounds(j * DISTANCIA + BORDE, i * DISTANCIA + BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
@@ -129,7 +131,54 @@ public class TableroPanel extends JPanel{
                     }
 
 
-                } else {
+                } else if (buscaminas.getEstado() == GameEst.TERMINADO) {
+                    if (buscaminas.getTablero()[i][j].getEstado() == CeldaEstado.CERRADO
+                            && buscaminas.getTablero()[i][j].isMina()) {
+                        TButton cerrado = new TButton(celda, j, i, "/images/mina.png");
+                        cerrado.setBounds(j * DISTANCIA + BORDE, i * DISTANCIA + BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
+                        cerrado.setBackground(new Color(29, 178, 215));
+                        //cerrado.setIcon(new ImageIcon("/images/closedCell.png"));
+                        cerrado.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+                        cerrado.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent ae) {
+                                listener.btnCasillaOnClick(cerrado.getXx(), cerrado.getYy());
+                            }
+                        });
+                        cerrado.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mousePressed(MouseEvent evt) {
+                                if (evt.getButton() == MouseEvent.BUTTON3) {
+                                    //System.out.println("CAMBIAR ESTADO");
+                                    listener.onRightClickButton(cerrado.getXx(), cerrado.getYy());
+                                }
+                            }
+                        });
+                        super.add(cerrado);
+                    } else {
+                        TButton cerrado = new TButton(celda, j, i, "/images/closedCell.png");
+                        cerrado.setBounds(j * DISTANCIA + BORDE, i * DISTANCIA + BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
+                        cerrado.setBackground(new Color(29, 178, 215));
+                        //cerrado.setIcon(new ImageIcon("/images/closedCell.png"));
+                        cerrado.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+                        cerrado.addActionListener(new ActionListener() {
+                            @Override
+                            public void actionPerformed(ActionEvent ae) {
+                                listener.btnCasillaOnClick(cerrado.getXx(), cerrado.getYy());
+                            }
+                        });
+                        cerrado.addMouseListener(new MouseAdapter() {
+                            @Override
+                            public void mousePressed(MouseEvent evt) {
+                                if (evt.getButton() == MouseEvent.BUTTON3) {
+                                    //System.out.println("CAMBIAR ESTADO");
+                                    listener.onRightClickButton(cerrado.getXx(), cerrado.getYy());
+                                }
+                            }
+                        });
+                        super.add(cerrado);
+                    }
+                }else {
                    TButton cerrado = new TButton(celda, j, i, "/images/closedCell.png");
                    cerrado.setBounds(j*DISTANCIA+BORDE, i*DISTANCIA+BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
                    cerrado.setBackground(new Color(29, 178, 215));
@@ -145,7 +194,7 @@ public class TableroPanel extends JPanel{
                         @Override
                         public void mousePressed(MouseEvent evt){
                             if(evt.getButton() == MouseEvent.BUTTON3){
-                                System.out.println("CAMBIAR ESTADO");
+                                //System.out.println("CAMBIAR ESTADO");
                                 listener.onRightClickButton(cerrado.getXx(), cerrado.getYy());
                             }
                         }

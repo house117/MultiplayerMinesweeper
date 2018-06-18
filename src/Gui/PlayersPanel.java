@@ -5,6 +5,7 @@
  */
 package Gui;
 
+import buscaminasobjects.BuscaminasMp;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -27,9 +28,9 @@ public class PlayersPanel extends JPanel{
     private PanelJugador pnlJugadorEnemigo;
     private JLabel minasTotales;
     private JPanel pnlMinasTotales;
-    public PlayersPanel(Jugador principal, Jugador enemigo) {
+    public PlayersPanel(Jugador principal, Jugador enemigo, BuscaminasMp buscaminas) {
         super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        super.setBackground(Color.BLACK);
+        //super.setBackground(Color.BLACK);
         
         super.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         this.jugadorPrincipal = principal;
@@ -38,8 +39,8 @@ public class PlayersPanel extends JPanel{
         pnlJugadorPrincipal = new PanelJugador(principal);
         
         
-        minasTotales = new JLabel("51");
-        minasTotales.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        minasTotales = new JLabel(String.format("%d", buscaminas.getMinas()));
+        minasTotales.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
         minasTotales.setForeground(Color.CYAN);
         
         pnlMinasTotales = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -53,6 +54,54 @@ public class PlayersPanel extends JPanel{
         super.add(pnlMinasTotales);
         super.add(pnlJugadorEnemigo);
         
+    }
+
+    public Jugador getJugadorPrincipal() {
+        return jugadorPrincipal;
+    }
+
+    public void setJugadorPrincipal(Jugador jugadorPrincipal) {
+        this.jugadorPrincipal = jugadorPrincipal;
+    }
+
+    public Jugador getJugadorEnemigo() {
+        return jugadorEnemigo;
+    }
+
+    public void setJugadorEnemigo(Jugador jugadorEnemigo) {
+        this.jugadorEnemigo = jugadorEnemigo;
+    }
+
+    public PanelJugador getPnlJugadorPrincipal() {
+        return pnlJugadorPrincipal;
+    }
+
+    public void setPnlJugadorPrincipal(PanelJugador pnlJugadorPrincipal) {
+        this.pnlJugadorPrincipal = pnlJugadorPrincipal;
+    }
+
+    public PanelJugador getPnlJugadorEnemigo() {
+        return pnlJugadorEnemigo;
+    }
+
+    public void setPnlJugadorEnemigo(PanelJugador pnlJugadorEnemigo) {
+        this.pnlJugadorEnemigo = pnlJugadorEnemigo;
+    }
+
+    public JLabel getMinasTotales() {
+        return minasTotales;
+    }
+
+    public void setMinasTotales(JLabel minasTotales) {
+        this.minasTotales = minasTotales;
+    }
+
+    public JPanel getPnlMinasTotales() {
+        return pnlMinasTotales;
+    }
+
+    public void setPnlMinasTotales(JPanel pnlMinasTotales) {
+        this.pnlMinasTotales = pnlMinasTotales;
     }
     
 }

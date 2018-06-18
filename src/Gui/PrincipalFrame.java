@@ -7,6 +7,7 @@ package Gui;
 
 import buscaminasobjects.BuscaminasMp;
 import Gui.listener.TableroListener;
+import Threads.Juez;
 import Threads.Receptor;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import objects.Equipo;
 import objects.GameEst;
 import objects.Jugador;
@@ -33,28 +35,47 @@ public class PrincipalFrame extends JFrame{
     private TableroPanel pnlTablero;
     private PlayersPanel pnlJugadores;
     private Socket socket;
+    private Socket socketNewGame;
     private Jugador jugador;
     private Jugador jugadorEnemigo;
     private Boolean isMyTurn;
-    ObjectOutputStream writer;
-    ObjectInputStream reader;
-    Receptor receptor;
-    public PrincipalFrame(String nombre) throws IOException, ClassNotFoundException{
-        super(nombre);
+    private ObjectOutputStream writer;
+    private ObjectInputStream reader;
+    private ObjectOutputStream writerNew;
+    private ObjectInputStream readerNew;
+    private Receptor receptor;
+    private Juez juez;
+    private MainChatPanel chat;
+    public PrincipalFrame(String nombre, String direccion) throws IOException, ClassNotFoundException{
+        super("Minesweeper Flags! By HouSe jaja");
         super.setLayout(new FlowLayout(FlowLayout.LEFT));
         super.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        super.setSize(new Dimension(700, 520));
+        super.setSize(new Dimension(1200, 520));
         super.setResizable(false);
         super.setLocationRelativeTo(null);
         super.setBackground(Color.black);
-        socket = new Socket("localhost", 1235);
-        
+        chat = new MainChatPanel(nombre, direccion);
+        socket = new Socket(direccion, 1235);
+        socketNewGame = new Socket(direccion, 1235);
+        writerNew = new ObjectOutputStream(socketNewGame.getOutputStream());
+        readerNew = new ObjectInputStream(socketNewGame.getInputStream());
+        System.out.println("Se conectaron los sockets");
         writer = new ObjectOutputStream(socket.getOutputStream());
         writer.writeObject(nombre);
         
         reader = new ObjectInputStream(socket.getInputStream());
         
         jugador = (Jugador)reader.readObject();
+        switch(jugador.getEquipo()){
+            case EquipoAzul:
+                jugadorEnemigo = new Jugador("Esperando jugador...", Equipo.EquipoRojo);
+                break;
+            case EquipoRojo:
+                jugadorEnemigo = new Jugador("Esperando jugador...", Equipo.EquipoAzul);
+                break;
+            default:
+                    throw new AssertionError();
+        }
         System.out.println("leyo al jugador: "+jugador.getEquipo());
         isMyTurn = (Boolean)reader.readObject();
         System.out.println("BOOLEANO ES:"+isMyTurn.toString());
@@ -65,12 +86,14 @@ public class PrincipalFrame extends JFrame{
         //juego
         this.buscaminas = (BuscaminasMp)reader.readObject();
         
-        
+        //Modo JUGANDO
+        buscaminas.setJuego(GameEst.JUGANDO);
         //JUGADORES
         
         
         //PANEL JUGADORES
-        pnlJugadores = new PlayersPanel(this.jugador, this.jugador);
+        pnlJugadores = new PlayersPanel(jugador, jugadorEnemigo, buscaminas);
+        
         pnlJugadores.setPreferredSize(new Dimension(200,480));
         //PANEL TABLERO
         pnlTablero = new TableroPanel(new ImageIcon("fondo.png"));
@@ -79,10 +102,11 @@ public class PrincipalFrame extends JFrame{
         pnlTablero.setListener(new TableroListener() {
             @Override
             public void btnCasillaOnClick(Integer x, Integer y) {
+                
                 if (getIsMyTurn()) {
                     System.out.printf("hicieron click en [%d][%d]", x, y);
                     try {
-                        setIsMyTurn(buscaminas.abrirCelda(x, y, getJugador(), writer));
+                        setIsMyTurn(buscaminas.abrirCelda(x, y, jugador, writer));
                         if (buscaminas.getEstado() == GameEst.JUGANDO) {
                             getPnlTablero().removeAll();
                             getPnlTablero().drawTablero(buscaminas);
@@ -90,11 +114,17 @@ public class PrincipalFrame extends JFrame{
                         } else {
                             System.out.println(buscaminas.getEstado());
                         }
+                        if(!isMyTurn){
+                            getPnlJugadores().getPnlJugadorEnemigo().getLblTurno().setText("- Jugando...");
+                            getPnlJugadores().getPnlJugadorPrincipal().getLblTurno().setText("- Espera...");
+                        }
                     } catch (IOException ex) {
                         Logger.getLogger(PrincipalFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
+                    updatePuntuaciones();
+                    updateMinas();
                 }else{
+                    
                     System.out.println("NO ES TU TURNO!!!");
                 }
                 //AGREGAR CONDICIONES SI GANAS O PIERDES!!!!!
@@ -106,28 +136,75 @@ public class PrincipalFrame extends JFrame{
             }
             @Override
             public void onRightClickButton(Integer x, Integer y) {
-                if (getIsMyTurn()) {
-                    System.out.printf("hicieron click en [%d][%d]", x, y);
-                    buscaminas.marcarCelda(x, y);
-                    getPnlTablero().removeAll();
-                    getPnlTablero().drawTablero(buscaminas);
-                    PrincipalFrame.this.repaint();
-                    /*
-               
-               SI GANO O PERDIO, EL CAMBIO DEL ICONITO, LENTES O MUERTO
-                     */
-                }
+                //lol no hago nada xd
+                
 
             }
         });
+        super.add(chat);
         super.add(pnlJugadores);
         super.add(pnlTablero);
         receptor = new Receptor(getJugador(), this.buscaminas, reader, this);
         System.out.println("Creo el receptor");
         receptor.start();
         System.out.println("Ya esta todo el pedo para "+jugador.getEquipo());
+        juez = new Juez(this, buscaminas, writerNew, readerNew);
+        System.out.println("Creo el juez");
+        juez.start();
         super.setVisible(true);
     }
+    public void iniciarNuevoJuego(BuscaminasMp buscaminas){
+        buscaminas.setJuego(GameEst.JUGANDO);
+        this.buscaminas = buscaminas;
+        juez.setBuscaminas(buscaminas);
+        pnlTablero.removeAll();
+        pnlTablero.drawTablero(this.buscaminas);
+        
+        PrincipalFrame.this.repaint();
+        updateMinas();
+        updatePuntuaciones();
+    }
+    public void terminarJuego(){
+        pnlTablero.drawTablero(buscaminas);
+        if(buscaminas.getBlueFlagCount()>buscaminas.getRedFlagCount()){
+            
+            if(jugador.getEquipo() == Equipo.EquipoAzul){
+                JOptionPane.showMessageDialog(this, "Ganaste!!!", "Juego terminado", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(this, "Ganó "+this.getPnlJugadores().getPnlJugadorEnemigo().getLblNombre().getText()
+                        , "Juego terminado "           
+                        , JOptionPane.INFORMATION_MESSAGE);
+            }
+           
+        }
+        if(buscaminas.getBlueFlagCount()<buscaminas.getRedFlagCount()){
+            if(jugador.getEquipo() == Equipo.EquipoRojo){
+                JOptionPane.showMessageDialog(this, "Ganaste!!!", "Juego terminado", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(this, "Ganó "+this.getPnlJugadores().getPnlJugadorEnemigo().getLblNombre().getText(),
+                        "Juego terminado"
+                        
+                        , JOptionPane.INFORMATION_MESSAGE);
+            }
+           //JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(this);
+        }
+    }
+    public void updateMinas(){
+        pnlJugadores.getMinasTotales().setText(String.format("%d", buscaminas.minasTotales()));
+    }
+    public void updatePuntuaciones(){
+       switch(jugador.getEquipo()){
+           case EquipoAzul:
+               pnlJugadores.getPnlJugadorPrincipal().getLblPuntuación().setText(String.format("%d", buscaminas.getBlueFlagCount()));
+               pnlJugadores.getPnlJugadorEnemigo().getLblPuntuación().setText(String.format("%d", buscaminas.getRedFlagCount()));
+               break;
+           case EquipoRojo:
+               pnlJugadores.getPnlJugadorPrincipal().getLblPuntuación().setText(String.format("%d", buscaminas.getRedFlagCount()));
+               pnlJugadores.getPnlJugadorEnemigo().getLblPuntuación().setText(String.format("%d", buscaminas.getBlueFlagCount()));
+               break;
+       }
+    }
+        
 
     public TableroPanel getPnlTablero() {
         return pnlTablero;
@@ -177,5 +254,19 @@ public class PrincipalFrame extends JFrame{
      */
     public void setJugador(Jugador jugador) {
         this.jugador = jugador;
+    }
+
+    /**
+     * @return the pnlJugadores
+     */
+    public PlayersPanel getPnlJugadores() {
+        return pnlJugadores;
+    }
+
+    /**
+     * @param pnlJugadores the pnlJugadores to set
+     */
+    public void setPnlJugadores(PlayersPanel pnlJugadores) {
+        this.pnlJugadores = pnlJugadores;
     }
 }
