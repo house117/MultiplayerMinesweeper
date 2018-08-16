@@ -61,7 +61,6 @@ public class TableroPanel extends JPanel{
                 if(celda.getEstado() == CeldaEstado.ABIERTO){
                     Tlabel abierto = null;
                     //JLabel abierto = new JLabel(); //= new JLabel("", SwingConstants.CENTER);
-
                     //abierto.setText(celda.getNumero().toString());
                     //abierto.setFont(new Font("Arial", Font.BOLD, 14));
                     switch (celda.getNumero()) {
@@ -103,10 +102,7 @@ public class TableroPanel extends JPanel{
                         default:
                             throw new AssertionError();
 
-                    }
-
-
-                    
+                    }                 
                 abierto.setBounds(j*DISTANCIA+BORDE, i*DISTANCIA+BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
                 abierto.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
                 
@@ -129,56 +125,56 @@ public class TableroPanel extends JPanel{
                         flag.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
                         super.add(flag);
                     }
-
-
-                } else if (buscaminas.getEstado() == GameEst.TERMINADO) {
-                    if (buscaminas.getTablero()[i][j].getEstado() == CeldaEstado.CERRADO
-                            && buscaminas.getTablero()[i][j].isMina()) {
-                        TButton cerrado = new TButton(celda, j, i, "/images/mina.png");
-                        cerrado.setBounds(j * DISTANCIA + BORDE, i * DISTANCIA + BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
-                        cerrado.setBackground(new Color(29, 178, 215));
-                        //cerrado.setIcon(new ImageIcon("/images/closedCell.png"));
-                        cerrado.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-                        cerrado.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent ae) {
-                                listener.btnCasillaOnClick(cerrado.getXx(), cerrado.getYy());
-                            }
-                        });
-                        cerrado.addMouseListener(new MouseAdapter() {
-                            @Override
-                            public void mousePressed(MouseEvent evt) {
-                                if (evt.getButton() == MouseEvent.BUTTON3) {
-                                    //System.out.println("CAMBIAR ESTADO");
-                                    listener.onRightClickButton(cerrado.getXx(), cerrado.getYy());
+                    } else if (buscaminas.getEstado() == GameEst.TERMINADO) {
+                        /*Si ya pasamos por los casos en que el tablero está abierto y blueflag red-flag, no tiene caso verificar si esta cerrado*/
+                        if (/*buscaminas.getTablero()[i][j].getEstado() == CeldaEstado.CERRADO
+                                && */buscaminas.getTablero()[j][i].isMina()) {
+                            TButton cerrado = new TButton(celda, j, i, "/images/mina.png");
+                            cerrado.setBounds(j * DISTANCIA + BORDE, i * DISTANCIA + BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
+                            cerrado.setBackground(new Color(29, 178, 215));
+                            //cerrado.setIcon(new ImageIcon("/images/closedCell.png"));
+                            cerrado.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+                            /*Si el juego ya termino no tiene caso agregarle los action listeners*/
+                            /*cerrado.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent ae) {
+                                    listener.btnCasillaOnClick(cerrado.getXx(), cerrado.getYy());
                                 }
-                            }
-                        });
-                        super.add(cerrado);
-                    } else {
-                        TButton cerrado = new TButton(celda, j, i, "/images/closedCell.png");
-                        cerrado.setBounds(j * DISTANCIA + BORDE, i * DISTANCIA + BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
-                        cerrado.setBackground(new Color(29, 178, 215));
-                        //cerrado.setIcon(new ImageIcon("/images/closedCell.png"));
-                        cerrado.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-                        cerrado.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent ae) {
-                                listener.btnCasillaOnClick(cerrado.getXx(), cerrado.getYy());
-                            }
-                        });
-                        cerrado.addMouseListener(new MouseAdapter() {
-                            @Override
-                            public void mousePressed(MouseEvent evt) {
-                                if (evt.getButton() == MouseEvent.BUTTON3) {
-                                    //System.out.println("CAMBIAR ESTADO");
-                                    listener.onRightClickButton(cerrado.getXx(), cerrado.getYy());
+                            });
+                            cerrado.addMouseListener(new MouseAdapter() {
+                                @Override
+                                public void mousePressed(MouseEvent evt) {
+                                    if (evt.getButton() == MouseEvent.BUTTON3) {
+                                        //System.out.println("CAMBIAR ESTADO");
+                                        //listener.onRightClickButton(cerrado.getXx(), cerrado.getYy());
+                                    }
                                 }
-                            }
-                        });
-                        super.add(cerrado);
-                    }
-                }else {
+                            });*/
+                            super.add(cerrado);
+                        } else {
+                            TButton cerrado = new TButton(celda, j, i, "/images/closedCell.png");
+                            cerrado.setBounds(j * DISTANCIA + BORDE, i * DISTANCIA + BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
+                            cerrado.setBackground(new Color(29, 178, 215));
+                            //cerrado.setIcon(new ImageIcon("/images/closedCell.png"));
+                            cerrado.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
+                            /*cerrado.addActionListener(new ActionListener() {
+                                @Override
+                                public void actionPerformed(ActionEvent ae) {
+                                    listener.btnCasillaOnClick(cerrado.getXx(), cerrado.getYy());
+                                }
+                            });
+                            cerrado.addMouseListener(new MouseAdapter() {
+                                @Override
+                                public void mousePressed(MouseEvent evt) {
+                                    if (evt.getButton() == MouseEvent.BUTTON3) {
+                                        //System.out.println("CAMBIAR ESTADO");
+                                        listener.onRightClickButton(cerrado.getXx(), cerrado.getYy());
+                                    }
+                                }
+                            });*/
+                            super.add(cerrado);
+                        }
+                    }else {
                    TButton cerrado = new TButton(celda, j, i, "/images/closedCell.png");
                    cerrado.setBounds(j*DISTANCIA+BORDE, i*DISTANCIA+BORDE, TAMANIO_CELDA, TAMANIO_CELDA);
                    cerrado.setBackground(new Color(29, 178, 215));
@@ -194,7 +190,7 @@ public class TableroPanel extends JPanel{
                         @Override
                         public void mousePressed(MouseEvent evt){
                             if(evt.getButton() == MouseEvent.BUTTON3){
-                                //System.out.println("CAMBIAR ESTADO");
+                                System.out.println("CAMBIAR ESTADO");
                                 listener.onRightClickButton(cerrado.getXx(), cerrado.getYy());
                             }
                         }

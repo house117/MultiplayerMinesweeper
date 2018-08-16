@@ -135,10 +135,16 @@ public class PrincipalFrame extends JFrame{
                 
             }
             @Override
-            public void onRightClickButton(Integer x, Integer y) {
-                //lol no hago nada xd
-                
-
+            public void onRightClickButton(Integer x, Integer y){
+               System.out.printf("hicieron click en [%d][%d]",x,y);
+               buscaminas.marcarCelda(x, y);
+               pnlTablero.removeAll();
+               pnlTablero.drawTablero(buscaminas);
+               PrincipalFrame.this.repaint();
+               /*
+               
+               SI GANO O PERDIO, EL CAMBIO DEL ICONITO, LENTES O MUERTO
+               */
             }
         });
         super.add(chat);
@@ -188,6 +194,7 @@ public class PrincipalFrame extends JFrame{
             }
            //JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(this);
         }
+        pnlTablero.drawTablero(buscaminas);
     }
     public void updateMinas(){
         pnlJugadores.getMinasTotales().setText(String.format("%d", buscaminas.minasTotales()));
