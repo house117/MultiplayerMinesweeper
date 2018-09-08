@@ -7,7 +7,6 @@ package Gui;
 
 import buscaminasobjects.BuscaminasMp;
 import Gui.listener.TableroListener;
-import Threads.Juez;
 import Threads.Receptor;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -44,7 +43,6 @@ public class PrincipalFrame extends JFrame{
     private ObjectOutputStream writerNew;
     private ObjectInputStream readerNew;
     private Receptor receptor;
-    private Juez juez;
     private MainChatPanel chat;
     public PrincipalFrame(String nombre, String direccion) throws IOException, ClassNotFoundException{
         super("Minesweeper Flags! By HouSe jaja");
@@ -107,7 +105,14 @@ public class PrincipalFrame extends JFrame{
                     System.out.printf("hicieron click en [%d][%d]", x, y);
                     try {
                         setIsMyTurn(buscaminas.abrirCelda(x, y, jugador, writer));
-                        if (buscaminas.getEstado() == GameEst.JUGANDO) {
+                        if (buscaminas.getBlueFlagCount() > 25 || buscaminas.getRedFlagCount() > 25
+                                && buscaminas.getJuego() != GameEst.TERMINADO) {
+                            System.out.println("JUEZ DETECTO JUEGO FINALIZADO");
+                            buscaminas.setJuego(GameEst.TERMINADO);
+                             PrincipalFrame.this.terminarJuego();
+                            JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(PrincipalFrame.this, writer, reader);
+                            buscaminas.setJuego(GameEst.JUGANDO);
+                        }else if (buscaminas.getEstado() == GameEst.JUGANDO) {
                             getPnlTablero().removeAll();
                             getPnlTablero().drawTablero(buscaminas);
                             PrincipalFrame.this.repaint();
@@ -141,8 +146,7 @@ public class PrincipalFrame extends JFrame{
                pnlTablero.removeAll();
                pnlTablero.drawTablero(buscaminas);
                PrincipalFrame.this.repaint();
-               /*
-               
+               /*  
                SI GANO O PERDIO, EL CAMBIO DEL ICONITO, LENTES O MUERTO
                */
             }
@@ -150,19 +154,19 @@ public class PrincipalFrame extends JFrame{
         super.add(chat);
         super.add(pnlJugadores);
         super.add(pnlTablero);
-        receptor = new Receptor(getJugador(), this.buscaminas, reader, this);
+        receptor = new Receptor(getJugador(), this.buscaminas, reader, writer, this);
         System.out.println("Creo el receptor");
         receptor.start();
         System.out.println("Ya esta todo el pedo para "+jugador.getEquipo());
-        juez = new Juez(this, buscaminas, writerNew, readerNew);
+        //juez = new Juez(this, buscaminas, writerNew, readerNew);
         System.out.println("Creo el juez");
-        juez.start();
+        //juez.start();
         super.setVisible(true);
     }
     public void iniciarNuevoJuego(BuscaminasMp buscaminas){
         buscaminas.setJuego(GameEst.JUGANDO);
         this.buscaminas = buscaminas;
-        juez.setBuscaminas(buscaminas);
+        //juez.setBuscaminas(buscaminas);
         pnlTablero.removeAll();
         pnlTablero.drawTablero(this.buscaminas);
         

@@ -34,22 +34,20 @@ public class Main {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-       
+                /*Here we go...*/
                 try {
                     JTextField nickname = new JTextField(15);
                     JTextField direccion = new JTextField(15);
-                    JPanel pnlMaterias = new JPanel();
-                    pnlMaterias.setLayout(new BoxLayout(pnlMaterias, BoxLayout.Y_AXIS));
-                    pnlMaterias.add(new JLabel("Nickname:"));
-                    pnlMaterias.add(nickname);
-                    pnlMaterias.add(new JLabel("Direccion Servidor:"));
-                    pnlMaterias.add(direccion);
-                    int resultMaterias = JOptionPane.showConfirmDialog(null, pnlMaterias, "Ingresa la cantidad de materias",
+                    JPanel pnlLogin = new JPanel();
+                    pnlLogin.setLayout(new BoxLayout(pnlLogin, BoxLayout.Y_AXIS));
+                    pnlLogin.add(new JLabel("Nickname:"));
+                    pnlLogin.add(nickname);
+                    pnlLogin.add(new JLabel("Direccion Servidor:"));
+                    pnlLogin.add(direccion);
+                    int resultMaterias = JOptionPane.showConfirmDialog(null, pnlLogin, "Nickname & Host address",
                             JOptionPane.OK_CANCEL_OPTION); //Con esto tenemos un boton de ok/cancel, muy util
                     if (resultMaterias == JOptionPane.OK_OPTION) {
-                        System.out.println("???Asdasd?");
                         PrincipalFrame ventana = new PrincipalFrame(nickname.getText(), direccion.getText());
-                        System.out.println("?????");
                     }
                 } catch (IOException | ClassNotFoundException ex) {
                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

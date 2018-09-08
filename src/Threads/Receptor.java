@@ -5,11 +5,13 @@
  */
 package Threads;
 
+import Gui.JuegoTerminadoDialog;
 import Gui.PlayersPanel;
 import Gui.PrincipalFrame;
 import buscaminasobjects.BuscaminasMp;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,13 +28,15 @@ public class Receptor extends Thread{
     private Jugador enemy;
     private BuscaminasMp buscaminas;
     private ObjectInputStream reader;
+    private ObjectOutputStream writer;
     private PrincipalFrame parent;
     public Receptor(Jugador player, BuscaminasMp buscaminas, 
-            ObjectInputStream reader, PrincipalFrame parent) throws IOException {
+            ObjectInputStream reader, ObjectOutputStream writer, PrincipalFrame parent) throws IOException {
         this.buscaminas = buscaminas;
         this.parent = parent;
         this.enemy = null;
         this.reader = reader;
+        this.writer = writer;
     }
 
     @Override
@@ -78,6 +82,14 @@ public class Receptor extends Thread{
                 
                 System.out.println("Recibí jugador enemigo y su puntuación ES: "+cord.getPlayer().getPuntaje());
                 buscaminas.abrirCelda(cord.getX(), cord.getY(), cord.getPlayer());
+                 if (buscaminas.getBlueFlagCount() > 25 || buscaminas.getRedFlagCount() > 25
+                                && buscaminas.getJuego() != GameEst.TERMINADO) {
+                            System.out.println("JUEZ DETECTO JUEGO FINALIZADO");
+                            buscaminas.setJuego(GameEst.TERMINADO);
+                             parent.terminarJuego();
+                            JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(parent, writer, reader);
+                            buscaminas.setJuego(GameEst.JUGANDO);
+                        }
                 parent.updateMinas();
                 parent.updatePuntuaciones();
                 parent.setIsMyTurn(turno);

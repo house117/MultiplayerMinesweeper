@@ -134,13 +134,14 @@ public class TableroPanel extends JPanel{
                             cerrado.setBackground(new Color(29, 178, 215));
                             //cerrado.setIcon(new ImageIcon("/images/closedCell.png"));
                             cerrado.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-                            /*Si el juego ya termino no tiene caso agregarle los action listeners*/
+                            /*Si el juego ya termino no tiene caso agregarle los action listeners.................*/
                             /*cerrado.addActionListener(new ActionListener() {
                                 @Override
                                 public void actionPerformed(ActionEvent ae) {
                                     listener.btnCasillaOnClick(cerrado.getXx(), cerrado.getYy());
                                 }
-                            });
+                            });*/
+                            /*
                             cerrado.addMouseListener(new MouseAdapter() {
                                 @Override
                                 public void mousePressed(MouseEvent evt) {
