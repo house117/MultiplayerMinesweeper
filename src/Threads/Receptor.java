@@ -28,15 +28,17 @@ public class Receptor extends Thread{
     private Jugador enemy;
     private BuscaminasMp buscaminas;
     private ObjectInputStream reader;
-    private ObjectOutputStream writer;
+    private ObjectInputStream readerNewGame;
+    private ObjectOutputStream writerNewGame;
     private PrincipalFrame parent;
     public Receptor(Jugador player, BuscaminasMp buscaminas, 
-            ObjectInputStream reader, ObjectOutputStream writer, PrincipalFrame parent) throws IOException {
+            ObjectInputStream reader, ObjectInputStream readerNewGame, ObjectOutputStream writerNewGame, PrincipalFrame parent) throws IOException {
         this.buscaminas = buscaminas;
         this.parent = parent;
         this.enemy = null;
         this.reader = reader;
-        this.writer = writer;
+        this.writerNewGame = writerNewGame;
+        this.readerNewGame = readerNewGame;
     }
 
     @Override
@@ -81,15 +83,7 @@ public class Receptor extends Thread{
                 Coordenada cord = (Coordenada)reader.readObject();
                 
                 System.out.println("Recibí jugador enemigo y su puntuación ES: "+cord.getPlayer().getPuntaje());
-                buscaminas.abrirCelda(cord.getX(), cord.getY(), cord.getPlayer());
-                 if (buscaminas.getBlueFlagCount() > 25 || buscaminas.getRedFlagCount() > 25
-                                && buscaminas.getJuego() != GameEst.TERMINADO) {
-                            System.out.println("JUEZ DETECTO JUEGO FINALIZADO");
-                            buscaminas.setJuego(GameEst.TERMINADO);
-                             parent.terminarJuego();
-                            JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(parent, writer, reader);
-                            buscaminas.setJuego(GameEst.JUGANDO);
-                        }
+                getBuscaminas().abrirCelda(cord.getX(), cord.getY(), cord.getPlayer());
                 parent.updateMinas();
                 parent.updatePuntuaciones();
                 parent.setIsMyTurn(turno);
@@ -100,12 +94,19 @@ public class Receptor extends Thread{
                     parent.getPnlJugadores().getPnlJugadorEnemigo().getLblTurno().setText("- Jugando...");
                 }
                 parent.getPnlTablero().removeAll();
-                parent.getPnlTablero().drawTablero(buscaminas);
+                parent.getPnlTablero().drawTablero(getBuscaminas());
                 parent.repaint();
             } catch (IOException ex) {
                 Logger.getLogger(Receptor.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Receptor.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if (getBuscaminas().getBlueFlagCount() > 25 || getBuscaminas().getRedFlagCount() > 25
+                    && getBuscaminas().getJuego() != GameEst.TERMINADO) {
+                System.out.println("JUEZ DETECTO JUEGO FINALIZADO");
+                getBuscaminas().setJuego(GameEst.TERMINADO);
+                parent.terminarJuego();
+                JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(parent, writerNewGame, readerNewGame);
             }
         }
     }
@@ -116,6 +117,20 @@ public class Receptor extends Thread{
 
     public void setEnemy(Jugador enemy) {
         this.enemy = enemy;
+    }
+
+    /**
+     * @return the buscaminas
+     */
+    public BuscaminasMp getBuscaminas() {
+        return buscaminas;
+    }
+
+    /**
+     * @param buscaminas the buscaminas to set
+     */
+    public void setBuscaminas(BuscaminasMp buscaminas) {
+        this.buscaminas = buscaminas;
     }
     
 }

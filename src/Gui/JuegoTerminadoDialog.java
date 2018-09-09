@@ -23,6 +23,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import objects.Equipo;
 
 /**
  *
@@ -35,6 +36,7 @@ public class JuegoTerminadoDialog extends JDialog{
     private JButton btnCancelar;
     private PrincipalFrame parent;
     private JLabel lblPregunta;
+    private JLabel estado;
     public JuegoTerminadoDialog(PrincipalFrame parent, ObjectOutputStream writer,
             ObjectInputStream reader){
         super(parent, "Nuevo juego", true);
@@ -61,26 +63,55 @@ public class JuegoTerminadoDialog extends JDialog{
             default:
                 throw new AssertionError();
         }
+        estado = new JLabel("Esperando tu respuesta...");
         pnlPrincipal = new JPanel();
         pnlPrincipal.setLayout(new FlowLayout(FlowLayout.CENTER));
         pnlPrincipal.add(lblPregunta);
+        pnlPrincipal.add(estado);
                 
         btnAceptar = new JButton("Aceptar");
         btnAceptar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 try {
-                    writer.writeObject(true);
-                    if((Boolean)reader.readObject() == true){
-                        BuscaminasMp buscaminas = (BuscaminasMp) reader.readObject();
-                        parent.setIsMyTurn((Boolean)reader.readObject());
-                        parent.iniciarNuevoJuego(buscaminas);
-                        JuegoTerminadoDialog.this.setVisible(false);
-                    }else{
-                        parent.setVisible(false);
+                    estado.setText("Esperando la respuesta del otro jugador...");
+
+                    if(parent.getJugador().getEquipo() == Equipo.EquipoAzul){
+                        writer.writeObject(true);
+                        if ((Boolean) reader.readObject() == true) {
+                            BuscaminasMp buscaminas = (BuscaminasMp) reader.readObject();
+                            //HAY QUE AGREGAR ESPERANDO RESPUESTA DE JUGADOR
+                            estado.setText("El jugador aceptó, iniciando nuevo juego...");
+                            Thread.sleep(3000);
+                            //parent.setIsMyTurn((Boolean) reader.readObject());
+                            System.out.println("--------------PASA EL SETISMYTURN---------");
+                            parent.iniciarNuevoJuego(buscaminas);
+                            JuegoTerminadoDialog.this.setVisible(false);
+                        } else {
+                            parent.setVisible(false);
+                            System.exit(0);
+                        }
+                    } else {
+                        if((Boolean)reader.readObject() == true){
+                            writer.writeObject(true);
+                            BuscaminasMp buscaminas = (BuscaminasMp) reader.readObject();
+                            //HAY QUE AGREGAR ESPERANDO RESPUESTA DE JUGADOR
+                            estado.setText("El jugador aceptó, iniciando nuevo juego...");
+                            Thread.sleep(1000);
+                            //parent.setIsMyTurn((Boolean) reader.readObject());
+                            System.out.println("--------------PASA EL SETISMYTURN---------");
+                            parent.iniciarNuevoJuego(buscaminas);
+                            JuegoTerminadoDialog.this.setVisible(false);
+                        }else{
+                            parent.setVisible(false);
+                            System.exit(0);
+                        }
                     }
+
                     
                 } catch (IOException | ClassNotFoundException ex) {
+                    Logger.getLogger(JuegoTerminadoDialog.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InterruptedException ex) {
                     Logger.getLogger(JuegoTerminadoDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
@@ -90,8 +121,14 @@ public class JuegoTerminadoDialog extends JDialog{
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                try {
+                    writer.writeObject(false);
+                } catch (IOException ex) {
+                    Logger.getLogger(JuegoTerminadoDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
                    JuegoTerminadoDialog.this.setVisible(false);
                    parent.setVisible(false);
+                   System.exit(0);
             }
         });
         pnlBtns = new JPanel(new FlowLayout());

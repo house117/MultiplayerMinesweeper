@@ -105,14 +105,7 @@ public class PrincipalFrame extends JFrame{
                     System.out.printf("hicieron click en [%d][%d]", x, y);
                     try {
                         setIsMyTurn(buscaminas.abrirCelda(x, y, jugador, writer));
-                        if (buscaminas.getBlueFlagCount() > 25 || buscaminas.getRedFlagCount() > 25
-                                && buscaminas.getJuego() != GameEst.TERMINADO) {
-                            System.out.println("JUEZ DETECTO JUEGO FINALIZADO");
-                            buscaminas.setJuego(GameEst.TERMINADO);
-                             PrincipalFrame.this.terminarJuego();
-                            JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(PrincipalFrame.this, writer, reader);
-                            buscaminas.setJuego(GameEst.JUGANDO);
-                        }else if (buscaminas.getEstado() == GameEst.JUGANDO) {
+                        if (buscaminas.getEstado() == GameEst.JUGANDO || buscaminas.getEstado() == GameEst.TERMINADO) {
                             getPnlTablero().removeAll();
                             getPnlTablero().drawTablero(buscaminas);
                             PrincipalFrame.this.repaint();
@@ -128,6 +121,14 @@ public class PrincipalFrame extends JFrame{
                     }
                     updatePuntuaciones();
                     updateMinas();
+                    if (buscaminas.getBlueFlagCount() > 25 || buscaminas.getRedFlagCount() > 25
+                                    && buscaminas.getJuego() != GameEst.TERMINADO) {
+                                System.out.println("JUEZ DETECTO JUEGO FINALIZADO");
+                                buscaminas.setJuego(GameEst.TERMINADO);
+                                PrincipalFrame.this.terminarJuego();
+                                JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(PrincipalFrame.this, writerNew, readerNew);
+                                buscaminas.setJuego(GameEst.JUGANDO);
+                            }
                 }else{
                     
                     System.out.println("NO ES TU TURNO!!!");
@@ -154,22 +155,29 @@ public class PrincipalFrame extends JFrame{
         super.add(chat);
         super.add(pnlJugadores);
         super.add(pnlTablero);
-        receptor = new Receptor(getJugador(), this.buscaminas, reader, writer, this);
+        receptor = new Receptor(getJugador(), this.buscaminas, reader, readerNew, writerNew, this);
         System.out.println("Creo el receptor");
         receptor.start();
         System.out.println("Ya esta todo el pedo para "+jugador.getEquipo());
-        //juez = new Juez(this, buscaminas, writerNew, readerNew);
         System.out.println("Creo el juez");
-        //juez.start();
         super.setVisible(true);
     }
-    public void iniciarNuevoJuego(BuscaminasMp buscaminas){
-        buscaminas.setJuego(GameEst.JUGANDO);
-        this.buscaminas = buscaminas;
+    public void iniciarNuevoJuego(BuscaminasMp NuevoBuscaminas){
+        NuevoBuscaminas.setJuego(GameEst.JUGANDO);
+        this.buscaminas = NuevoBuscaminas;
+        pnlJugadores.setBuscaminas(NuevoBuscaminas);
+        receptor.setBuscaminas(NuevoBuscaminas);
         //juez.setBuscaminas(buscaminas);
         pnlTablero.removeAll();
-        pnlTablero.drawTablero(this.buscaminas);
-        
+        pnlTablero.drawTablero(NuevoBuscaminas);
+        if (getIsMyTurn() == true) {
+            this.getPnlJugadores().getPnlJugadorEnemigo().getLblTurno().setText("Esperando...");
+            this.getPnlJugadores().getPnlJugadorPrincipal().getLblTurno().setText("- Tu turno");
+
+        } else {
+            this.getPnlJugadores().getPnlJugadorEnemigo().getLblTurno().setText("- Jugando...");
+
+        }
         PrincipalFrame.this.repaint();
         updateMinas();
         updatePuntuaciones();

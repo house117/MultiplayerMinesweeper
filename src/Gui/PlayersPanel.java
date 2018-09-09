@@ -28,6 +28,7 @@ public class PlayersPanel extends JPanel{
     private PanelJugador pnlJugadorEnemigo;
     private JLabel minasTotales;
     private JPanel pnlMinasTotales;
+    private BuscaminasMp buscaminas;
     public PlayersPanel(Jugador principal, Jugador enemigo, BuscaminasMp buscaminas) {
         super.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         //super.setBackground(Color.BLACK);
@@ -35,11 +36,11 @@ public class PlayersPanel extends JPanel{
         super.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
         this.jugadorPrincipal = principal;
         this.jugadorEnemigo = enemigo;
-        
+        this.buscaminas = buscaminas;
         pnlJugadorPrincipal = new PanelJugador(principal);
         
         
-        minasTotales = new JLabel(String.format("%d", buscaminas.getMinas()));
+        minasTotales = new JLabel(String.format("%d", this.buscaminas.getMinas()));
         minasTotales.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
         minasTotales.setForeground(Color.CYAN);
         
@@ -102,6 +103,20 @@ public class PlayersPanel extends JPanel{
 
     public void setPnlMinasTotales(JPanel pnlMinasTotales) {
         this.pnlMinasTotales = pnlMinasTotales;
+    }
+
+    /**
+     * @return the buscaminas
+     */
+    public BuscaminasMp getBuscaminas() {
+        return buscaminas;
+    }
+
+    /**
+     * @param buscaminas the buscaminas to set
+     */
+    public void setBuscaminas(BuscaminasMp buscaminas) {
+        this.buscaminas = buscaminas;
     }
     
 }
