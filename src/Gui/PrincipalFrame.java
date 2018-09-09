@@ -127,7 +127,7 @@ public class PrincipalFrame extends JFrame{
                                 buscaminas.setJuego(GameEst.TERMINADO);
                                 PrincipalFrame.this.terminarJuego();
                                 JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(PrincipalFrame.this, writerNew, readerNew);
-                                buscaminas.setJuego(GameEst.JUGANDO);
+                                //buscaminas.setJuego(GameEst.JUGANDO);
                             }
                 }else{
                     
@@ -182,31 +182,30 @@ public class PrincipalFrame extends JFrame{
         updateMinas();
         updatePuntuaciones();
     }
-    public void terminarJuego(){
+    public void terminarJuego() {
+        buscaminas.setJuego(GameEst.TERMINADO);
+        pnlTablero.removeAll();
         pnlTablero.drawTablero(buscaminas);
-        if(buscaminas.getBlueFlagCount()>buscaminas.getRedFlagCount()){
-            
-            if(jugador.getEquipo() == Equipo.EquipoAzul){
+        PrincipalFrame.this.repaint();
+        if (buscaminas.getBlueFlagCount() > buscaminas.getRedFlagCount()) {
+            if (jugador.getEquipo() == Equipo.EquipoAzul) {
                 JOptionPane.showMessageDialog(this, "Ganaste!!!", "Juego terminado", JOptionPane.INFORMATION_MESSAGE);
-            }else{
-                JOptionPane.showMessageDialog(this, "Ganó "+this.getPnlJugadores().getPnlJugadorEnemigo().getLblNombre().getText()
-                        , "Juego terminado "           
-                        , JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Ganó " + this.getPnlJugadores().getPnlJugadorEnemigo().getLblNombre().getText(),
+                         "Juego terminado ",
+                         JOptionPane.INFORMATION_MESSAGE);
             }
-           
         }
-        if(buscaminas.getBlueFlagCount()<buscaminas.getRedFlagCount()){
-            if(jugador.getEquipo() == Equipo.EquipoRojo){
+        if (buscaminas.getBlueFlagCount() < buscaminas.getRedFlagCount()) {
+            if (jugador.getEquipo() == Equipo.EquipoRojo) {
                 JOptionPane.showMessageDialog(this, "Ganaste!!!", "Juego terminado", JOptionPane.INFORMATION_MESSAGE);
-            }else{
-                JOptionPane.showMessageDialog(this, "Ganó "+this.getPnlJugadores().getPnlJugadorEnemigo().getLblNombre().getText(),
-                        "Juego terminado"
-                        
-                        , JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Ganó " + this.getPnlJugadores().getPnlJugadorEnemigo().getLblNombre().getText(),
+                        "Juego terminado",
+                         JOptionPane.INFORMATION_MESSAGE);
             }
-           //JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(this);
+            //JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(this);
         }
-        pnlTablero.drawTablero(buscaminas);
     }
     public void updateMinas(){
         pnlJugadores.getMinasTotales().setText(String.format("%d", buscaminas.minasTotales()));

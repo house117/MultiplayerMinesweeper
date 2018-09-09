@@ -103,7 +103,7 @@ public class Receptor extends Thread{
             }
             if (getBuscaminas().getBlueFlagCount() > 25 || getBuscaminas().getRedFlagCount() > 25
                     && getBuscaminas().getJuego() != GameEst.TERMINADO) {
-                System.out.println("JUEZ DETECTO JUEGO FINALIZADO");
+                System.out.println("JUEZ DETECTO JUEGO FINALIZADO EN RECEPTOR");
                 getBuscaminas().setJuego(GameEst.TERMINADO);
                 parent.terminarJuego();
                 JuegoTerminadoDialog terminado = new JuegoTerminadoDialog(parent, writerNewGame, readerNewGame);
