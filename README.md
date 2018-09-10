@@ -1,5 +1,5 @@
 # MultiplayerMinesweeper
-###ENGLISH HOW-TO!!!!<br />
+<h1>###ENGLISH HOW-TO!!!!</h1><br />
 My own game! You can play with a friend across the globe, 
 still adding new features, the aim of this game is not to avoid mines, but to FIND them! Enjoy!
 How to play?<br />
@@ -16,7 +16,7 @@ Notes: The server can recieve N players, and run N matches.<br />
 You can start a new game after the game is over, both players must agree.<br />
 WARNING!!!!!Don't press the right button of your mouse while playing unless you wanna break the game, im working on a new feature<br />
 and is not ready yet!)<br />
-###¿CÓMO JUGAR? ESPAÑOL!!!<br />
+<h1>###¿CÓMO JUGAR? ESPAÑOL!!!</h1><br />
 Mi propio juego!!, puedes jugar con tus amigos a traves incluso de internet si cuentas con un servidor dedicado.<br />
 Estoy añadiendo nuevas cosas, debes saber que el objetivo de este "BUSCAMINAS", es encontrar las minas!!! No evitarlas,<br />
 espero te diviertas jugándolo si lo llegas a descargar!<br />
