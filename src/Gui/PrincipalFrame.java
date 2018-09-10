@@ -142,11 +142,12 @@ public class PrincipalFrame extends JFrame{
             }
             @Override
             public void onRightClickButton(Integer x, Integer y){
-               System.out.printf("hicieron click en [%d][%d]",x,y);
-               buscaminas.marcarCelda(x, y);
+               System.out.printf("hicieron click derecho en [%d][%d]",x,y);
+               /*buscaminas.marcarCelda(x, y);
                pnlTablero.removeAll();
                pnlTablero.drawTablero(buscaminas);
                PrincipalFrame.this.repaint();
+                */
                /*  
                SI GANO O PERDIO, EL CAMBIO DEL ICONITO, LENTES O MUERTO
                */

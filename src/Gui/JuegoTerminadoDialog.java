@@ -103,15 +103,12 @@ public class JuegoTerminadoDialog extends JDialog{
                             parent.iniciarNuevoJuego(buscaminas);
                             JuegoTerminadoDialog.this.setVisible(false);
                         }else{
+                            writer.writeObject(false);
                             parent.setVisible(false);
                             System.exit(0);
                         }
                     }
-
-                    
-                } catch (IOException | ClassNotFoundException ex) {
-                    Logger.getLogger(JuegoTerminadoDialog.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (InterruptedException ex) {
+                } catch (IOException | ClassNotFoundException | InterruptedException ex) {
                     Logger.getLogger(JuegoTerminadoDialog.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
@@ -121,7 +118,8 @@ public class JuegoTerminadoDialog extends JDialog{
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                try {
+                if(parent.getJugador().getEquipo() == Equipo.EquipoAzul){
+                                    try {
                     writer.writeObject(false);
                 } catch (IOException ex) {
                     Logger.getLogger(JuegoTerminadoDialog.class.getName()).log(Level.SEVERE, null, ex);
@@ -129,6 +127,18 @@ public class JuegoTerminadoDialog extends JDialog{
                    JuegoTerminadoDialog.this.setVisible(false);
                    parent.setVisible(false);
                    System.exit(0);
+                }else{
+                    try {
+                        writer.writeObject(false);
+                        parent.setVisible(false);
+                        if((Boolean)reader.readObject() == true){;
+                            System.exit(0);
+                        }
+                    } catch (IOException | ClassNotFoundException ex) {
+                        Logger.getLogger(JuegoTerminadoDialog.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
             }
         });
         pnlBtns = new JPanel(new FlowLayout());
