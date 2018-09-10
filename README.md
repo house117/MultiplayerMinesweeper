@@ -9,7 +9,7 @@ Server .jar URL: https://github.com/house117/ServerMinesweeper/tree/master/jar%2
 3.-Once the server is downladed, you can download the jar inside the "jar del juego" folder.<br />
 4.-Run the jar server, and get the IP addres of the machine the server's running on.<br />
 5.-Now you can run the MultiplayerMinesweeper.jar file.<br />
-6.-Insert your Nickname and the server IP addres, that's it you will be connected (server and you may be on the same network)<br />
+6.-Insert your Nickname and the server IP addres, that's it!, you will be connected (the server and you may be on the same network)<br />
 I mean, connected to the same router, unless you have a dedicated server).<br />
 7.-This is a 2 PLAYER game, so, someone else should do the same and he will be connected with you (he may be on the same network, also).<br />
 Notes: The server can recieve N players, and run N matches.<br />
